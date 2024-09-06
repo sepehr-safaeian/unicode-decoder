@@ -59,3 +59,19 @@ func processFile(path string) error {
 
 	return nil
 }
+
+func decodeUnicode(s string) string {
+	runes := []rune{}
+	for len(s) > 0 {
+		if strings.HasPrefix(s, `\u`) && len(s) >= 6 {
+			var r rune
+			fmt.Sscanf(s[2:6], "%04x", &r)
+			runes = append(runes, r)
+			s = s[6:]
+		} else {
+			runes = append(runes, rune(s[0]))
+			s = s[1:]
+		}
+	}
+	return string(runes)
+}
