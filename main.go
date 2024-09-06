@@ -1,13 +1,22 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strings"
 )
 
 func main() {
 	root := "source"
+	err := walkDir(root)
+	if err != nil {
+		fmt.Println("Error:", err)
+	} else {
+		fmt.Println("Processing completed.")
+	}
 }
 
 func walkDir(root string) error {
@@ -33,7 +42,7 @@ func processFile(path string) error {
 	}
 	defer file.Close()
 
-	vat outputLines []string
+	var outputLines []string
 	scanner := bufio.NewScanner(file)
 	re := regexp.MustCompile(`\\u[0-9A-Fa-f]{4}`)
 	for scanner.Scan() {
