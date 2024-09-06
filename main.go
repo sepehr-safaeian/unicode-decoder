@@ -3,10 +3,27 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 func main() {
 	root := "source"
+}
+
+func walkDir(root string) error {
+	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() && strings.HasSuffix(info.Name(), ".properties") {
+			fmt.Println("Processing file:", path)
+			if err := processFile(path); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	return err
 }
 
 func processFile(path string) error {
